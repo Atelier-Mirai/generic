@@ -315,3 +315,101 @@ consumeSilverHolderList.add(new SilverHolder(400, "Shiro")); // OK
 Object obj = consumeSilverHolderList.get(0); // OK (Object型として取り出す)
 // SilverHolder s = consumeSilverHolderList.get(0); // コンパイルエラー！
 ```
+
+## 【補遺】 配列の共変性による実行時エラーの例
+
+ArrayList<Holder> silverHolderList = new ArrayList<SilverHolder>(); は、ArrayList の不変性により、コンパイルエラーとなります。そのため、型安全性が保証されます。
+一方、配列では共変性を持つため、類似の代入がコンパイル時に許容され、その結果として実行時エラーが発生する可能性があります。
+以下に、配列の共変性によってコンパイル時には許容されるが、実行時にエラー（ArrayStoreException）を送出する例を挙げます。
+
+### 共変性による代入と実行時エラーの発生
+
+以下のコードでは、SilverHolder[] 型の配列を Holder[] 型の変数に代入しています。これは配列の共変性によってコンパイル時に許容されます。
+
+しかし、その後に実際に SilverHolder[] である配列に対して、SilverHolder ではない GoldHolder オブジェクトを代入しようとするため、実行時に ArrayStoreException が発生します。
+
+```java
+public class ArrayCovarianceErrorExample {
+    public static void main(String[] args) {
+        // SilverHolder型の配列を初期化
+        SilverHolder[] silverHolders = {
+            new SilverHolder(100, "Ichiro"),
+            new SilverHolder(200, "Jiro"),
+            new SilverHolder(300, "Saburo")
+        };
+
+        System.out.println("--- 初期状態 ---");
+        for (SilverHolder sh : silverHolders) {
+            System.out.println(sh);
+        }
+        System.out.println();
+
+        // ここがポイント：配列の共変性
+        // SilverHolder[] は Holder[] のサブタイプとして扱えるため、コンパイルOK
+        Holder[] holders = silverHolders; // コンパイルエラーにならない！
+
+        System.out.println("--- Holder[] 変数に代入後 ---");
+        System.out.println("holders[0] の内容は: " + holders[0]); // SilverHolder(id=100, name='Ichiro')
+        System.out.println();
+
+        // 別の Holder サブクラスのインスタンスを生成
+        GoldHolder queen = new GoldHolder(400, "Queen");
+
+        System.out.println("--- 問題の発生 ---");
+        try {
+            // holders 変数は Holder[] 型なので、コンパイル時には GoldHolder の代入が許可される
+            // しかし、実際に参照している配列の実体は SilverHolder[] であるため、
+            // ここで ArrayStoreException が発生する！
+            holders[1] = queen; // 実行時に ArrayStoreException が発生
+            System.out.println("この行は実行されません。"); // エラーでスキップされる
+        } catch (ArrayStoreException e) {
+            System.err.println("!!! ArrayStoreException が発生しました !!!");
+            System.err.println("エラーメッセージ: " + e.getMessage());
+            System.err.println("原因: SilverHolder[] 配列に GoldHolder を代入しようとしました。");
+        }
+
+        System.out.println("\n--- 最終状態 ---");
+        // 配列の元の要素を確認（エラーで代入が失敗しているため、元のJiroのまま）
+        for (SilverHolder sh : silverHolders) { // 元の SilverHolder[] は変更されない
+            System.out.println(sh);
+        }
+        // holders 変数を通じてアクセスした場合も同様
+        for (Holder h : holders) {
+            System.out.println(h);
+        }
+    }
+}
+```
+
+### 実行結果（コンソール出力）
+
+```
+--- 初期状態 ---
+SilverHolder{number=100, name='Ichiro'}
+SilverHolder{number=200, name='Jiro'}
+SilverHolder{number=300, name='Saburo'}
+
+--- Holder[] 変数に代入後 ---
+holders[0] の内容は: SilverHolder{number=100, name='Ichiro'}
+
+--- 問題の発生 ---
+!!! ArrayStoreException が発生しました !!!
+エラーメッセージ: GoldHolder
+原因: SilverHolder[] 配列に GoldHolder を代入しようとしました。
+
+--- 最終状態 ---
+SilverHolder{number=100, name='Ichiro'}
+SilverHolder{number=200, name='Jiro'}
+SilverHolder{number=300, name='Saburo'}
+SilverHolder{number=100, name='Ichiro'}
+SilverHolder{number=200, name='Jiro'}
+SilverHolder{number=300, name='Saburo'}
+```
+
+### まとめ
+
+この例が示すように、Javaの配列が持つ共変性は、Holder[] holders = silverHolders; のような代入をコンパイル時に許可します。しかし、配列の実行時の型チェック（ArrayStoreException）によって、実際に配列に格納できるオブジェクトの型が検証されます。
+
+もし、holdersという変数を通じて、実際に参照している配列（SilverHolder[]）とは異なる型のオブジェクト（GoldHolder）を代入しようとすると、その時点で型不整合が検出され、ArrayStoreException という実行時エラーが発生するのです。
+
+これが、ジェネリクスが導入される前のJavaの型システムにおける配列の共変性の問題点であり、ジェネリクスがデフォルトで不変性を採用する大きな理由となりました。ジェネリクスでは、上記のArrayListの例のように、このような型の不整合はコンパイル時に検出され、実行時エラーを未然に防ぎます。

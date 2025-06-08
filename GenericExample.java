@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class GenericDemo {
+public class GenericExample {
     public static void main(String[] args) {
         // 各クラスのインスタンスを生成する。
         // Holderは女性
@@ -12,12 +12,12 @@ public class GenericDemo {
         SilverHolder jiro   = new SilverHolder(200, "Jiro");
         SilverHolder saburo = new SilverHolder(300, "Saburo");
 
-        System.out.println(ayako);  // Holder: 1 Ayako
-        System.out.println(kayoko); // Holder: 2 Kayoko
-        System.out.println(sayoko); // Holder: 3 Sayoko
-        System.out.println(ichiro); // SilverHolder: 100 Ichiro
-        System.out.println(jiro);   // SilverHolder: 200 Jiro
-        System.out.println(saburo); // SilverHolder: 300 Saburo
+        System.out.println(ayako);  // Holder{number=1, name='Ayako'}
+        System.out.println(kayoko); // Holder{number=2, name='Kayoko'}
+        System.out.println(sayoko); // Holder{number=3, name='Sayoko'}
+        System.out.println(ichiro); // SilverHolder{number=100, name='Ichiro'}
+        System.out.println(jiro);   // SilverHolder{number=200, name='Jiro'}
+        System.out.println(saburo); // SilverHolder{number=300, name='Saburo'}
 
         // 配列による例
         Holder[] holders = new Holder[6];
@@ -27,8 +27,12 @@ public class GenericDemo {
         holders[3] = ichiro;
         holders[4] = jiro;
         holders[5] = saburo;
-        System.out.println(holders);
-        // [Holder: 1 Ayako, Holder: 2 Kayoko, Holder: 3 Sayoko, SilverHolder: 100 Ichiro, SilverHolder: 200 Jiro, SilverHolder: 300 Saburo]
+        for (Holder h : holders) {
+            System.out.println(h);
+        }
+        // Holder{number=1, name='Ayako'}, Holder{number=2, name='Kayoko'},
+        // Holder{number=3, name='Sayoko'}, SilverHolder{number=100, name='Ichiro'},
+        // SilverHolder{number=200, name='Jiro'}, SilverHolder{number=300,name='Saburo'}
 
         // ArrayList<Holder>は、Holder型とそのサブタイプを格納できる動的配列。
         ArrayList<Holder> holderList = new ArrayList<>();
@@ -38,15 +42,23 @@ public class GenericDemo {
         holderList.add((Holder)ichiro); // ichiroはSilverHolder。可読性のため、明示的にキャスト。
         holderList.add((Holder)jiro);   
         holderList.add((Holder)saburo);
-        System.out.println(holderList);
-        // [Holder: 1 Ayako, Holder: 2 Kayoko, Holder: 3 Sayoko, SilverHolder: 100 Ichiro, SilverHolder: 200 Jiro, SilverHolder: 300 Saburo]
+        for (Holder h : holderList) {
+            System.out.println(h);
+        }
+        // Holder{number=1, name='Ayako'}, Holder{number=2, name='Kayoko'},
+        // Holder{number=3, name='Sayoko'}, SilverHolder{number=100, name='Ichiro'},
+        // SilverHolder{number=200, name='Jiro'}, SilverHolder{number=300,name='Saburo'}
 
         // ArrayList<SilverHolder>は、SilverHolder型(とそのサブタイプ)を格納できる動的配列。
         ArrayList<SilverHolder> silverHolderList = new ArrayList<>();
         silverHolderList.add(ichiro);
         silverHolderList.add(jiro);
         silverHolderList.add(saburo);
-        System.out.println(silverHolderList);
-        // [SilverHolder: 100 Ichiro, SilverHolder: 200 Jiro, SilverHolder: 300 Saburo]
+        for (SilverHolder sh : silverHolderList) {
+            System.out.println(sh);
+        }
+        // SilverHolder{number=100, name='Ichiro'},
+        // SilverHolder{number=200, name='Jiro'},
+        // SilverHolder{number=300, name='Saburo'}
     }
 }

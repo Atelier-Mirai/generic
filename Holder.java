@@ -12,9 +12,9 @@ public class Holder {
 
     // System.out.println(holder)を呼び出すと、
     // 以下のように表示されるので、デバッグ等に便利。
-    // Holder: 1 Ayako
+    // Holder{number=1, name='Ayako'}
     @Override
     public String toString() {
-        return String.format("Holder: %d %s", this.number, this.name);
+        return String.format("Holder{number=%d, name='%s'}", this.number, this.name);
     }
 }
