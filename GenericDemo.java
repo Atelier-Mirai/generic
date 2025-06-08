@@ -19,7 +19,16 @@ public class GenericDemo {
         System.out.println(jiro);   // SilverHolder: 200 Jiro
         System.out.println(saburo); // SilverHolder: 300 Saburo
 
-        // 配列(Array)による例
+        // 配列による例
+        Holder[] holders = new Holder[6];
+        holders[0] = ayako;
+        holders[1] = kayoko;
+        holders[2] = sayoko;
+        holders[3] = ichiro;
+        holders[4] = jiro;
+        holders[5] = saburo;
+        System.out.println(holders);
+        // [Holder: 1 Ayako, Holder: 2 Kayoko, Holder: 3 Sayoko, SilverHolder: 100 Ichiro, SilverHolder: 200 Jiro, SilverHolder: 300 Saburo]
 
         // ArrayList<Holder>は、Holder型とそのサブタイプを格納できる動的配列。
         ArrayList<Holder> holderList = new ArrayList<>();
@@ -39,21 +48,5 @@ public class GenericDemo {
         silverHolderList.add(saburo);
         System.out.println(silverHolderList);
         // [SilverHolder: 100 Ichiro, SilverHolder: 200 Jiro, SilverHolder: 300 Saburo]
-
-        // 不変性、共変性、反変性 について
-        // ArrayList<SilverHolder>はSilverHolder型とそのサブタイプを格納できる。
-        // しかし、ArrayList<Holder>はSilverHolder型とそのサブタイプを格納できない。
-        // ArrayList<Holder> list = new ArrayList<SilverHolder>();
-        // SilverHolder[] shl = new SilverHolder[3];
-        // shl[0] = ichiro;
-        // shl[1] = jiro;
-        // shl[2] = saburo;
-        // list.add(shl[0]);
-        // list.add(shl[1]);
-        // list.add(shl[2]);
-        // System.out.println(list);
-
-        // list.add(new Holder(1, "Ayako"));
-        // System.out.println(list.get(0))// Holder: 1 Ayako
     }
 }
