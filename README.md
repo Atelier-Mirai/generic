@@ -242,21 +242,11 @@ public class GenericDemo {
 }
 ```
 
-Holder       ayako  = new Holder(1, "Ayako");
-Holder       kayoko = new Holder(2, "Kayoko");
-Holder       sayoko = new Holder(3, "Sayoko");
-
-<!-- public class SilverHolder extends Holder -->
-SilverHolder ichiro = new SilverHolder(100, "Ichiro");
-SilverHolder jiro   = new SilverHolder(200, "Jiro");
-SilverHolder saburo = new SilverHolder(300, "Saburo");
-
-ArrayList<Holder> silverHolderList = new ArrayList<SilverHolder>();
-
-
 ## 不変性 (Invariance) / 共変性 (Covariance) / 反変性 (Contravariance)
 
-### 不変性 (Invariance)
+さて、ジェネリックスの基本的な使い方が理解できたところで、ジェネリックスの不変性 / 共変性 / 反変性について学んでいきましょう。
+
+### 不変性 (Invariance) とは
 SilverHolder が Holder のサブタイプだとしても、List<SilverHolder> と List<Holder> の間に自動的な型階層（サブタイプ関係）が生成されない、つまり「型引数のサブタイプ関係に影響されない」という点に着目しています。ジェネリック型そのものの型関係が、型引数の変化によって「変動しない」という意味合いです。なので、この性質を「不変性」と呼びます。これにより、**型安全性を保証**します。
 
 ```java
@@ -290,7 +280,7 @@ SilverHolder retrievedSilver = silverHolderList.get(0); // もしqueenが入っ�
 
 Javaのジェネリクスは、このようなコンパイル時には見つけられない実行時エラーを防ぐことを最優先しているため、上記のようなArrayList<Holder> silverHolderList = new ArrayList<SilverHolder>(); の代入をコンパイル段階で禁止し、型安全性を保証しているのです。
 
-### 共変性 (Covariance)
+### 共変性 (Covariance) とは
 「共変（covariant）」という言葉は、「共に（co-）」、「変化する（variant）」という組み合わせから来ています。つまり、元の型の変化（サブタイプ化）と同じ方向（同じ意味での「より特殊な型」への変化）に、コンテナ型（または関数型）の型も変化するという意味合いです。
 
 * 共変性 (List<? extends Holder>): 読み取り専用の目的で、より柔軟な型を許容します。
@@ -305,7 +295,7 @@ Holder h = anyHolderList.get(0); // OK
 // anyHolderList.add(new Holder(4, "New")); // コンパイルエラー！
 ```
 
-### 反変性 (Contravariance)
+### 反変性 (Contravariance) とは
 「反変（contravariant）」は、「反対（contra-）」、「変化する（variant）」という組み合わせから来ています。つまり、元の型の変化（サブタイプ化）の逆方向（同じ意味での「より一般的な型」への変化）に、コンテナ型（または関数型）の型も変化するという意味合いです。
 
 * 反変性 (List<? super SilverHolder>): 書き込み可能な目的で、より柔軟な型を許容します。
